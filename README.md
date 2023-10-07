@@ -38,7 +38,6 @@ php artisan breeze:install
  └──────────────────────────────────────────────────────────────┘
 ```
 
-
 ### vite.config.jsの設定
 
 docker環境でViteを使うため以下のコードを追加してホットリロードを有効にする。
@@ -76,9 +75,10 @@ export default defineConfig({
 });
 
 ```
+
 ## インストール後の構成確認
 
-上記設定後`web.php`を確認。ルートページでは`resources/js/Pages/Welcome.jsx`が表示されているみたい。
+breezeインストールによってファイルが大量に追加された。まずは`web.php`を確認。ルートページでは`resources/js/Pages/Welcome.jsx`が表示されているみたい。
 
 ```php
 Route::get('/', function () {
@@ -91,7 +91,7 @@ Route::get('/', function () {
 });
 ```
 
-`Inertia`の`render`メソッドを確認する。
+Inertiaは初めて使うため、`Inertia`の`render`メソッドのDocコメントで文法を確認。
 
 ```php
 Inertia\Inertia::render
@@ -105,7 +105,7 @@ public static function render($component, $props = []) { }
 @return \Inertia\Response
 ```
 
-次に、ログインページを確認。ルートは`/login`で、`routes/auth.php`に定義されている。
+次に、ログインページを確認。URLは`/login`で、`routes/auth.php`に定義されている。
 
 ```php
 Route::get('login', [AuthenticatedSessionController::class, 'create'])
@@ -126,16 +126,15 @@ public function create(): Response
 
 `resources/js/Pages/Auth/Login.jsx`を表示しているみたい。`render`メソッドの第二引数に表示したい`jsx`ファイルのパスを渡せばよさそう。（`Pages`ディレクトリ起点？）
 
-## Reactの構文を確認
+## Reactの基礎を学ぶ
 
 React公式ドキュメントの「LEARN REACT > Your First Component」から確認していく。
 
-- [Your First Component – React](https://react.dev/learn/your-first-component
+- [Your First Component – React](https://react.dev/learn/your-first-component)
 
-要約:
+ポイント:
 
 - ComponentはReactのコアであり、UIを作る基礎部分になる
-- 
 
 ### コンポーネントのExport
 
@@ -143,18 +142,18 @@ React公式ドキュメントの「LEARN REACT > Your First Component」から�
 
 ### 関数の定義
 
-`function 関数名() { } ` はJavaScriptの関数と同じだが、**大文字**で始めること！
+`function 関数名() { }` はJavaScriptの関数と同じだが、**大文字**で始めること！
 
 ```jsx
 // Login.jsxの例
 export default function Login({ status, canResetPassword }) {
-// ...
+  // ...
 }
 ```
 
 ### マークアップ
 
-HTMLのようにタグを記述するが内部でJavaScriptが使われてる。この文法を**JSX**と呼ぶ。
+コンポーネントはHTMLのようタグの記述を返すが、内部的にはJavaScriptらしい。この構文を**JSX**と呼ぶみたいだ。
 
 - `return`は一行で記述する
 - 一行に収まらない時は、カッコ`()`で囲うこと
@@ -177,12 +176,12 @@ return (
 
 ### コンポーネントを使う
 
-上記の`Login.jsx`の記述を参考に
+上記`Login.jsx`の記述を参考に
 
 - 小文字で始まるタグは通常のHTMLタグとして認識される（`<div>`など）
 - 大文字で始まるものはReactのコンポーネントとして認識（`<GuestLayout>`や`<Head title="Log in" />`など）
 
-コンポーネントのネストと整理について: （[Nesting and organizing components ](https://react.dev/learn/your-first-component#nesting-and-organizing-components) ）
+コンポーネントのネストと整理について: （[Nesting and organizing components](https://react.dev/learn/your-first-component#nesting-and-organizing-components) ）
 
 - コンポーネントは同じファイルに複数書ける
 - ファイルが大きくなったら単一のファイルに分けたらいい
