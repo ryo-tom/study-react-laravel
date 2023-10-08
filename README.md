@@ -321,7 +321,7 @@ export default function App()
 - **JSX**は拡張構文で、**React**はJavaScriptのライブラリである
 - **JSX**はHTMLに似ているが、より厳格なルールがある
 
-### The Rules of JSX
+### The Rules of JSX 
 
 #### ルート要素は一つだけ
 
@@ -429,6 +429,8 @@ export function User() {
 ドキュメント参考箇所:
 
 - [Passing Props to a Component – React](https://react.dev/learn/passing-props-to-a-component)
+
+ポイント:
 
 - props = 小道具
 - 親componentは**props**を使って子componentに情報を渡す
@@ -596,8 +598,6 @@ function Task({ task, isDone }) {
 
 - [Rendering Lists – React](https://react.dev/learn/rendering-lists)
 
-**Describing the UI**という最初のチャプターの最後のパート。
-
 例えば「従業員 : 部署」というリストを表示したいとする。
 
 ```html
@@ -705,3 +705,121 @@ export default function List() {
 }
 
 ```
+
+## Keeping Components Pure
+
+ドキュメント参考箇所:
+
+- [Keeping Components Pure – React](https://react.dev/learn/keeping-components-pure)
+
+**Describing the UI**という最初のチャプターの最後のパート
+
+ポイント:
+
+- componentは常に同じ結果を返すべき
+- componentを呼び出す度に結果が変わるような実装をすべきでない
+
+例えば、以下のコードはコンポーネント外部で宣言した変数を内部で使っているため、コンポーネントを呼び出す度に異なるJSXを生成してしまう。
+
+```jsx
+// 悪い例
+let itemId = 0;
+
+function Item() {
+  itemId++;
+  return <div>Item #{itemId}</div>;
+}
+
+export default function List() {
+  return (
+    <>
+      <Item />
+      <Item />
+      <Item />
+    </>
+  );
+}
+
+// レンダリング結果は以下ようになる
+// Item #2
+// Item #4
+// Item #6
+```
+
+解決方法として次のように**prop**を使うこと。
+
+```jsx
+function Item({ itemId }) {
+  return <div>Item #{itemId}</div>;
+}
+
+export default function List() {
+  return (
+    <>
+      <Item itemId={1} />
+      <Item itemId={2} />
+      <Item itemId={3} />
+    </>
+  );
+}
+
+```
+
+また、コンポーネントの内部またはpropsを通してデータを渡すと、予期せぬバグや副作用を避けるこができる。
+
+```jsx
+function Item({ itemId }) {
+  return <li>Item #{itemId}</li>;
+}
+
+export default function List() {
+    let items = [];
+    for (let i = 1; i <= 5; i++) {
+      items.push(<Item key={i} itemId={i} />);
+    }
+    return items;
+}
+```
+
+## Responding to Events
+
+チャプター: _LEARN REACT_ > _ADDING INTERACTIVITY_
+
+ドキュメント参照箇所:
+
+- [Responding to Events – React](https://react.dev/learn/responding-to-events)
+
+**Event handler functions**は通常、
+
+- コンポーネントの中に定義する
+- `handle`から始まるイベントの名を命名する
+  - 例えば、`onClick={handleClick}`, `onMouseEnter={handleMouseEnter}`など
+
+注意点:
+
+- 正）`<button onClick={handleClick}>`は、ボタンクリック時に関数が呼び出される
+- 誤）`<button onClick={handleClick()}>`は、レンダリング時に即時呼び出される
+
+Event propagation（イベントの伝播）:
+
+- イベントは子から親要素に向かって伝播していく
+- 伝播を止めるにはイベントオブジェクト（`e`）に対して、`e.stopPropagation()`を呼ぶ
+- formの送信イベントを止めるには、`e.preventDefault()`
+
+## State: A Component's Memory
+
+ドキュメント参照箇所: [State: A Component's Memory – React](https://react.dev/learn/state-a-components-memory)
+
+ポイント:
+
+- ローカル変数はレンダリング間で保持されない
+- ローカル変数が更新されても新しいデータで再度レンダリングされるわけではない
+
+解決するには:
+
+- `useState`を使う
+- `import { useState } from 'react';`でインポートする
+
+**Hook**とは:
+
+- `useState`のように、`use`から始まる関数を**Hook**と呼ぶ
